@@ -1,0 +1,1 @@
+A sample of what simple_repeat.py and SymSettings.cfg could look like. 
