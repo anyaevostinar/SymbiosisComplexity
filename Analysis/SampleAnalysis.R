@@ -1,5 +1,4 @@
 require(ggplot2)
-install.packages("viridis")
 library(viridis)
 
 #Set your working directory to the Analysis folder for your project
@@ -8,14 +7,26 @@ library(viridis)
 initial_data <- read.csv("sgp-treatment/munged_tasks.csv", h=T)
 final_update <- subset(initial_data, update == "50000")
 
-#Plot the host and symbiont interaction values by vertical transmission rate
-(ggplot(data=final_update, aes(x=partner, y=task_NOT, color=partner))
-	+ geom_boxplot(alpha=0.5, outlier.size=0)
-	+ ylab("Completions of NOT in the last 5000 timesteps")
-	+ xlab("Partner")
-	+ theme(panel.background = element_rect(fill='white', colour='black'))
-	+ theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) 
-	+ guides(fill=FALSE) 
-	+ ylim(-1,1) 
-	+ scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(2))
-	+ facet_wrap(~treatment))
+plot <- function(name, task) {
+    #Plot the host and symbiont interaction values by vertical transmission rate
+    ggplot(data=final_update, aes(x=factor(as.character(inflow), levels=unique(inflow)), y={{ name }}, color=partner)) +
+    	geom_boxplot(alpha=0.5, outlier.size=0, orientation="x") +
+        ylab(paste("Completions of ", task, " in the last 5000 timesteps")) +
+    	xlab("Inflow rate") +
+    	theme(panel.background = element_rect(fill='white', colour='black')) +
+    	theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
+    	guides(fill=FALSE) +
+    	#ylim(0,400000) +
+    	scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(2))
+    	#facet_wrap(~inflow)
+}
+
+plot(task_NOT, "NOT")
+plot(task_NAND, "NAND")
+plot(task_AND, "AND")
+plot(task_ORN, "ORN")
+plot(task_OR, "OR")
+plot(task_ANDN, "ANDN")
+plot(task_NOR, "NOR")
+plot(task_XOR, "XOR")
+plot(task_EQU, "EQU")
