@@ -4,7 +4,7 @@ library(viridis)
 #Set your working directory to the Analysis folder for your project
 
 #Read in the data
-initial_data <- read.csv("sgp-treatment/munged_tasks.csv", h=T)
+initial_data <- read.csv("munged_tasks.csv", h=T)
 final_update <- subset(initial_data, update == "50000")
 
 plot <- function(name, task) {
@@ -15,9 +15,9 @@ plot <- function(name, task) {
     	xlab("Inflow rate") +
     	theme(panel.background = element_rect(fill='white', colour='black')) +
     	theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-    	guides(fill=FALSE) +
+    	guides(fill=FALSE)
     	#ylim(0,400000) +
-    	scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(2))
+    	#scale_color_manual(name="", values=viridis(2))
     	#facet_wrap(~inflow)
 }
 

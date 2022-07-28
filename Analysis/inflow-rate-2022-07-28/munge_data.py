@@ -1,7 +1,7 @@
 import os.path
 import gzip
 
-folder = '../../Data/sgp-treatment/'
+folder = '../../Data/inflow-rate-2022-07-28/'
 
 inflow_rates = [100, 250, 500, 1000, 2500, 5000, 10000, 20000]
 reps = range(10,13)
