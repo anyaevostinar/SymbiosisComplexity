@@ -3,7 +3,7 @@ import gzip
 
 folder = '../../Data/vertical-transmission-2022-07-28/'
 
-verts = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
+verts = ["NONE", 0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 reps = range(10,20)
 header = "vert,rep,update,partner,donated,task_NOT,task_NAND,task_AND,task_ORN,task_OR,task_ANDN,task_NOR,task_XOR,task_EQU"
 
@@ -20,6 +20,11 @@ for v in verts:
             donatedFile.readline()
             for line in curFile:
                 if (line[0] != "u"):
+                    sym = True
+                    if v == "NONE":
+                        v = "No symbiont"
+                        sym = False
+
                     splitline = line.split(',')
                     outstring1 = f"\n{v},{r},{splitline[0]}"
                     dLine = donatedFile.readline().split(',')
@@ -31,6 +36,7 @@ for v in verts:
                         outstring1 += "," + splitline[i].strip()
                         outstring2 += "," + splitline[i+1].strip()
                     outFile.write(outstring1)
-                    outFile.write(outstring2)
+                    if sym:
+                        outFile.write(outstring2)
             curFile.close()
 outFile.close()

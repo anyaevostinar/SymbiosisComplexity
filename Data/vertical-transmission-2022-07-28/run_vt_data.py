@@ -51,3 +51,9 @@ for a in seeds:
 
         print(command_str)
         cmd(command_str+" > "+settings_filename)
+    # Now do it one more time without symbionts
+    command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _VT_NONE'
+    settings_filename = "Output_VT_NONE_SEED"+str(a)+".data"
+
+    print(command_str)
+    cmd(command_str+" > "+settings_filename)
