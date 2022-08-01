@@ -15,9 +15,9 @@ plot <- function(name, task) {
     	xlab("Vertical transmission rate") +
     	theme(panel.background = element_rect(fill='white', colour='black')) +
     	theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-    	guides(fill=FALSE)
+    	guides(fill="none") +
+    	scale_color_manual(name="", values=viridis(2))
     	#ylim(0,400000) +
-    	#scale_color_manual(name="", values=viridis(2))
     	#facet_wrap(~inflow)
 }
 
@@ -32,13 +32,14 @@ plot(task_XOR, "XOR")
 plot(task_EQU, "EQU")
 
 
-ggplot(data=subset(final_update, partner == "symbiont"), aes(x=factor(as.character(vert), levels=unique(vert)), y=donated)) +
-	geom_boxplot(alpha=0.5, outlier.size=0, orientation="x") +
-    ylab("Proportion of symbiont resources donated") +
+ggplot(data=subset(final_update, partner == "symbiont"), aes(x=factor(as.character(vert), levels=unique(vert)))) +
+	geom_boxplot(aes(y=earned, color="Earned"), alpha=0.5, outlier.size=0, orientation="x") +
+	geom_boxplot(aes(y=donated, color="Donated"), alpha=0.5, outlier.size=0, orientation="x") +
+    ylab("Total symbiont resources earned and donated") +
 	xlab("Vertical transmission rate") +
 	theme(panel.background = element_rect(fill='white', colour='black')) +
 	theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
-	guides(fill=FALSE)
+	guides(fill="none") +
+	scale_color_manual(name="", values=viridis(2))
 	#ylim(0,400000) +
-	#scale_color_manual(name="", values=viridis(2))
 	#facet_wrap(~inflow)
