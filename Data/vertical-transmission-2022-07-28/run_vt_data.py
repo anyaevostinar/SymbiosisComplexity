@@ -10,11 +10,15 @@ verts = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 # mois = [0, 1]
 # inflows = [100, 250, 500, 1000, 2500, 5000, 10000, 20000]
 
-def cmd(command):
+def cmd(command, wait):
     '''This wait causes all executions to run in sieries.                          
     For parralelization, remove .wait() and instead delay the                      
     R script calls unitl all neccesary data is created.'''
-    return subprocess.Popen(command, shell=True).wait()
+    c = subprocess.Popen(command, shell=True)
+    if wait:
+        return c.wait()
+    else:
+        return c
 
 def silent_cmd(command):
     '''This wait causes all executions to run in sieries.                          
@@ -44,16 +48,19 @@ seeds = range(start_range, end_range)
 #Tell the user the inclusive range of seeds
 print("Using seeds", start_range, "through", end_range-1)
 
+count = 0
 for a in seeds:
     for b in verts:
+        count += 1
         command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _VT_{b}'
         settings_filename = "Output_VT_"+str(b)+"_SEED"+str(a)+".data"
 
         print(command_str)
-        cmd(command_str+" > "+settings_filename)
+        # Run 4 processes at once
+        cmd(command_str+" > "+settings_filename, False)#count % 4 == 0)
     # Now do it one more time without symbionts
     command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _VT_NONE'
     settings_filename = "Output_VT_NONE_SEED"+str(a)+".data"
 
     print(command_str)
-    cmd(command_str+" > "+settings_filename)
+    cmd(command_str+" > "+settings_filename, True)
