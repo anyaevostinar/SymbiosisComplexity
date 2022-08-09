@@ -7,7 +7,7 @@ library(gridExtra)
 
 #Read in the data
 initial_data <- read.csv("munged_tasks.csv", h=T)
-final_update <- subset(initial_data, update == "50000")
+final_update <- subset(initial_data, update == "200000")
 final_update[final_update$vert == "No symbiont", c("vert", "partner")] <- list("", "nosym")
 
 tasks <- c("NOT", "NAND", "AND", "ORN", "OR", "ANDN", "NOR", "XOR", "EQU")
@@ -24,7 +24,7 @@ ggplot(data=task_data, aes(x=factor(as.character(vert), levels=unique(vert)), y=
 	theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position='top') +
 	guides(fill="none") +
 	scale_color_manual(name="", values=viridis(3), guide=guide_legend(direction='horizontal'), breaks=c("nosym", "host", "symbiont"), labels=c("Host without symbiont", "Host with symbiont", "Symbiont")) +
-	# scale_y_continuous(trans='log10') +
+	scale_y_continuous(trans='log10') +
 	facet_wrap(~variable, scales="free", labeller=labeller(variable=task_map))
 
 donated_data <- melt(subset(final_update, partner=="symbiont"), id.vars=c("vert"), measure.vars=c("earned", "donated"))
