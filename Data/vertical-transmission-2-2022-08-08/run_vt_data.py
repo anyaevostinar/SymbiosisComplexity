@@ -5,29 +5,31 @@
 
 import subprocess
 import sys
+import time
 
 verts = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 # mois = [0, 1]
 # inflows = [100, 250, 500, 1000, 2500, 5000, 10000, 20000]
 
-def cmd(command, wait):
-    '''This wait causes all executions to run in series.
-    For parallelization, remove .wait() and instead delay the
-    R script calls unitl all necessary data is created.'''
+# Run NPROCS processes at once
+# Make sure THREAD_COUNT is set to 1 in SymSettings.cfg!
+NPROCS = 30
+open_cmds = []
+def cmd(command):
     c = subprocess.Popen(command, shell=True)
-    if wait:
-        return c.wait()
-    else:
-        return c
-
-def silent_cmd(command):
-    '''This wait causes all executions to run in sieries.                          
-    For parralelization, remove .wait() and instead delay the                      
-    R script calls unitl all neccesary data is created.'''
-    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).wait()
+    open_cmds.append(c)
+    while len(open_cmds) >= NPROCS:
+        # Poll every 30 seconds for terminated processes
+        time.sleep(30)
+        i = 0
+        while i < len(open_cmds):
+            if open_cmds[i].poll() is not None:
+                del open_cmds[i]
+            else:
+                i += 1
 
 start_range = 10
-end_range = 20
+end_range = 30
 
 #collect optional command line arguments
 if len(sys.argv) > 1:
@@ -48,19 +50,20 @@ seeds = range(start_range, end_range)
 #Tell the user the inclusive range of seeds
 print("Using seeds", start_range, "through", end_range-1)
 
-count = 0
 for a in seeds:
-    count += 1
+    # Run for each VT rate, then once without symbionts
     for b in verts:
         command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _VT_{b}'
         settings_filename = "Output_VT_"+str(b)+"_SEED"+str(a)+".data"
 
         print(command_str)
-        # Run 4 processes at once
-        cmd(command_str+" > "+settings_filename, False)#count % 4 == 0)
-    # Now do it one more time without symbionts
+        cmd(command_str+" > "+settings_filename)
     command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _VT_NONE'
     settings_filename = "Output_VT_NONE_SEED"+str(a)+".data"
 
     print(command_str)
-    cmd(command_str+" > "+settings_filename, count % 2 == 0)
+    cmd(command_str+" > "+settings_filename)
+
+# Make sure all commands finish
+for i in open_cmds:
+    i.wait()
