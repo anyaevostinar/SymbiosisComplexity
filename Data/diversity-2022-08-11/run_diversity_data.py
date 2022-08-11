@@ -57,16 +57,16 @@ print("Using seeds", start_range, "through", end_range-1)
 
 for a in seeds:
     for b in verts:
-        command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _Modularity_{b}'
-        settings_filename = "Output_Modularity_"+str(b)+"_SEED"+str(a)+".data"
+        command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _Diversity_{b}'
+        settings_filename = "Output_Diversity_"+str(b)+"_SEED"+str(a)+".data"
 
         print(command_str)
         # Run 4 processes at once
         cmd(command_str+" > "+settings_filename) #count % 4 == 0)
         # cmd(command_str,False)
     # Now do it one more time without symbionts
-    command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _Modularity_NONE'
-    settings_filename = "Output_Modularity_NONE_SEED"+str(a)+".data"
+    command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _Diversity_NONE'
+    settings_filename = "Output_Diversity_NONE_SEED"+str(a)+".data"
     # cmd(command_str,False)
 
     print(command_str)
