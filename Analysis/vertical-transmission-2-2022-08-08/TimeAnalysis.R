@@ -71,4 +71,31 @@ ggplot(data=subset(initial_data, partner=="symbiont" & is.finite(mutualism)), ae
 	#scale_color_manual(name="", values=viridis(2), guide=guide_legend(direction='horizontal'), breaks=c("earned", "donated"), labels=c("Symbiont earned resources", "Symbiont donated resources"))
 #grid.arrange(a, arrangeGrob(b, c, ncol=2), nrow=2 )
 
+trans_data <- melt(subset(initial_data, partner=="symbiont"), id.vars=c("update","vert"), measure.vars=c("attempts_horiz", "success_horiz", "attempts_vert"))
+ggplot(data=trans_data, aes(x=update, y=value, color=variable, fill=variable)) +
+    stat_summary(fun.data="mean_se", geom=c("smooth"), se=TRUE) +
+    ylab("Transmission events") +
+    ggtitle("Symbiont transmission events") +
+	xlab("Update") +
+	theme(panel.background = element_rect(fill='white', colour='black')) +
+	theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position='top', plot.title=element_text(hjust=0.5)) +
+	guides(fill="none") +
+	scale_color_manual(name="", values=viridis(3), guide=guide_legend(direction='horizontal'), breaks=c("attempts_horiz", "success_horiz", "attempts_vert"),
+		labels=c("Attempted horizontal transmission", "Successful horizontal transmission", "Vertical transmission")) +
+    scale_fill_manual(values=viridis(3), breaks=c("attempts_horiz", "success_horiz", "attempts_vert")) +
+    facet_wrap(~vert, labeller=vt_label)
+trans_data <- melt(subset(initial_data, partner=="symbiont"), id.vars=c("update","vert"), measure.vars=c("success_horiz", "attempts_vert"))
+ggplot(data=trans_data, aes(x=update, y=value, color=variable, fill=variable)) +
+    stat_summary(fun.data="mean_se", geom=c("smooth"), se=TRUE) +
+    ylab("Transmission events") +
+    ggtitle("Symbiont transmission events") +
+	xlab("Update") +
+	theme(panel.background = element_rect(fill='white', colour='black')) +
+	theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position='top', plot.title=element_text(hjust=0.5)) +
+	guides(fill="none") +
+	scale_color_manual(name="", values=viridis(2), guide=guide_legend(direction='horizontal'), breaks=c("success_horiz", "attempts_vert"),
+		labels=c("Successful horizontal transmission", "Vertical transmission")) +
+    scale_fill_manual(values=viridis(2), breaks=c("success_horiz", "attempts_vert")) +
+    facet_wrap(~vert, labeller=vt_label)
+
 warnings()

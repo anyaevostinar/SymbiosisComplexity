@@ -8,14 +8,17 @@ import sys
 import time
 
 verts = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
-# mois = [0, 1]
-# inflows = [100, 250, 500, 1000, 2500, 5000, 10000, 20000]
+# verts = [0.2]
 
-# Run NPROCS processes at once
-# Make sure THREAD_COUNT is set to 1 in SymSettings.cfg!
+path = '../../SymbulationEmp/'
+
 NPROCS = 28
 open_cmds = []
+
 def cmd(command):
+    '''This wait causes all executions to run in series.
+    For parallelization, remove .wait() and instead delay the
+    R script calls unitl all necessary data is created.'''
     c = subprocess.Popen(command, shell=True)
     open_cmds.append(c)
     while len(open_cmds) >= NPROCS:
@@ -28,8 +31,9 @@ def cmd(command):
             else:
                 i += 1
 
+
 start_range = 10
-end_range = 30
+end_range = 18
 
 #collect optional command line arguments
 if len(sys.argv) > 1:
@@ -50,20 +54,22 @@ seeds = range(start_range, end_range)
 #Tell the user the inclusive range of seeds
 print("Using seeds", start_range, "through", end_range-1)
 
+
 for a in seeds:
-    # Run for each VT rate, then once without symbionts
     for b in verts:
-        command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _VT_{b}'
-        settings_filename = "Output_VT_"+str(b)+"_SEED"+str(a)+".data"
+        command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _Modularity_{b}'
+        settings_filename = "Output_Modularity_"+str(b)+"_SEED"+str(a)+".data"
 
         print(command_str)
-        cmd(command_str+" > "+settings_filename)
-    command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _VT_NONE'
-    settings_filename = "Output_VT_NONE_SEED"+str(a)+".data"
+        # Run 4 processes at once
+        cmd(command_str+" > "+settings_filename) #count % 4 == 0)
+        # cmd(command_str,False)
+    # Now do it one more time without symbionts
+    command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _Modularity_NONE'
+    settings_filename = "Output_Modularity_NONE_SEED"+str(a)+".data"
+    # cmd(command_str,False)
 
     print(command_str)
     cmd(command_str+" > "+settings_filename)
-
-# Make sure all commands finish
 for i in open_cmds:
     i.wait()
