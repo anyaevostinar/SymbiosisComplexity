@@ -5,14 +5,23 @@
 
 import subprocess
 import sys
+import time
 
 verts = [0.0, 1.0]
-
+NPROCS = 10
+open_cmds = []
 def cmd(command):
-    '''This wait causes all executions to run in series.                          
-    For parralelization, remove .wait() and instead delay the                      
-    R script calls unitl all neccesary data is created.'''
-    return subprocess.Popen(command, shell=True).wait()
+    c = subprocess.Popen(command, shell=True)
+    open_cmds.append(c)
+    while len(open_cmds) >= NPROCS:
+        # Poll every 30 seconds for terminated processes
+        time.sleep(30)
+        i = 0
+        while i < len(open_cmds):
+            if open_cmds[i].poll() is not None:
+                del open_cmds[i]
+            else:
+                i += 1
 
 def silent_cmd(command):
     '''This wait causes all executions to run in series.                          
@@ -21,7 +30,7 @@ def silent_cmd(command):
     return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE).wait()
 
 start_range = 10
-end_range = 20
+end_range = 30
 
 #collect optional command line arguments
 if(len(sys.argv) > 1):
@@ -49,3 +58,6 @@ for a in seeds:
 
         print(command_str)
         cmd(command_str+" > "+settings_filename)
+
+for i in open_cmds:
+    i.wait()
