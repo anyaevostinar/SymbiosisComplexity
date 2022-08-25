@@ -10,7 +10,7 @@ pdf("OverTime.pdf")
 #Read in the data
 initial_data_full <- read.csv("munged_tasks.csv", h=T)
 # for (i in list(100, 500)) {
-	initial_data <- initial_data_full #subset(initial_data_full, ht_res==i)
+	initial_data <- subset(initial_data_full, update < 200001)
 
 	tasks <- c("NOT", "NAND", "AND", "ORN", "OR", "ANDN", "NOR", "XOR", "EQU")
 	task_columns <- lapply(tasks, function(x) paste0("task_", x))
