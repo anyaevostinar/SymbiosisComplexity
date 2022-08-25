@@ -5,7 +5,7 @@ folder = '../../Data/host-symbiont-squares-2022-08-09/'
 
 treatment_postfixes = ["VT0.0", "VT1.0"]
 partners = ["Host", "Sym"]
-reps = range(10,20)
+reps = range(10,30)
 header = "uid treatment rep update square_frequencies partner\n"
 
 outputFileName = "munged_basic.dat"

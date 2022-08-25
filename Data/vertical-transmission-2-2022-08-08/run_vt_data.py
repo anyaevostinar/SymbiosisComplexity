@@ -13,7 +13,7 @@ verts = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
 # Run NPROCS processes at once
 # Make sure THREAD_COUNT is set to 1 in SymSettings.cfg!
-NPROCS = 30
+NPROCS = 28
 open_cmds = []
 def cmd(command):
     c = subprocess.Popen(command, shell=True)
