@@ -3,11 +3,11 @@ import os.path
 
 import gzip
 
-folder = '../../Data/diversity-2022-08-11' #change this later
+folder = '../../Data/diversity-2022-08-11' #change this if needed
 
 verts = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
 reps = range(10,18)
-header = "rep, VT_rate, alpha_diversity, shannon_diversity, species_richness, partner\n" #update,
+header = "rep, VT_rate, alpha_diversity, shannon_diversity, species_richness, partner\n"
 
 outputFileName = "munged_diversity.csv"
 
