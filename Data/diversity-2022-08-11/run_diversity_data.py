@@ -57,7 +57,7 @@ print("Using seeds", start_range, "through", end_range-1)
 
 for a in seeds:
     for b in verts:
-        command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _Diversity_{b}'
+        command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _Diversity_{b} -TASK_TYPE 1 -UPDATES 50001'
         settings_filename = "Output_Diversity_"+str(b)+"_SEED"+str(a)+".data"
 
         print(command_str)
