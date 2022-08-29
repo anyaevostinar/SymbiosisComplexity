@@ -3,7 +3,7 @@ import gzip
 
 folder = './'
 
-treatment_postfixes = ["VT0.0", "VT1.0"]
+treatment_postfixes = ["VT0.2", "VT0.8"]
 
 fname = "munged_basic.dat"
 outputFileName = "table.dat"

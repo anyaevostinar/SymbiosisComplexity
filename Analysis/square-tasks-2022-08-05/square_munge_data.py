@@ -3,7 +3,7 @@ import gzip
 
 folder = '../../Data/host-symbiont-squares-2022-08-09/'
 
-treatment_postfixes = ["VT0.0", "VT1.0"]
+treatment_postfixes = ["VT0.2", "VT0.8"]
 partners = ["Host", "Sym"]
 reps = range(10,30)
 header = "uid treatment rep update square_frequencies partner\n"
