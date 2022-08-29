@@ -7,18 +7,13 @@ import subprocess
 import sys
 import time
 
-verts = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
-# verts = [0.2]
+verts = [0.2, 0.8]
 
-path = '../../SymbulationEmp/'
-
-NPROCS = 28
+# Run NPROCS processes at once
+# Make sure THREAD_COUNT is set to 1 in SymSettings.cfg!
+NPROCS = 24
 open_cmds = []
-
 def cmd(command):
-    '''This wait causes all executions to run in series.
-    For parallelization, remove .wait() and instead delay the
-    R script calls unitl all necessary data is created.'''
     c = subprocess.Popen(command, shell=True)
     open_cmds.append(c)
     while len(open_cmds) >= NPROCS:
@@ -31,9 +26,8 @@ def cmd(command):
             else:
                 i += 1
 
-
 start_range = 10
-end_range = 18
+end_range = 30
 
 #collect optional command line arguments
 if len(sys.argv) > 1:
@@ -54,22 +48,21 @@ seeds = range(start_range, end_range)
 #Tell the user the inclusive range of seeds
 print("Using seeds", start_range, "through", end_range-1)
 
-
 for a in seeds:
+    # Run for each VT rate, then once without symbionts
     for b in verts:
-        command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _Diversity_{b} -TASK_TYPE 1 -UPDATES 50001'
-        settings_filename = "Output_Diversity_"+str(b)+"_SEED"+str(a)+".data"
+        # Scale vert trans resources as 50% of horiz trans resources, so it doesn't go too far off
+        command_str = f'./symbulation_sgp -SEED {a} -VERTICAL_TRANSMISSION {b} -FILE_NAME _VT_{b}'
+        settings_filename = f"Output_VT_{b}_SEED{a}.data"
 
         print(command_str)
-        # Run 4 processes at once
-        cmd(command_str+" > "+settings_filename) #count % 4 == 0)
-        # cmd(command_str,False)
-    # Now do it one more time without symbionts
-    command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _Diversity_NONE'
-    settings_filename = "Output_Diversity_NONE_SEED"+str(a)+".data"
-    # cmd(command_str,False)
+        cmd(command_str+" > "+settings_filename)
+    command_str = f'./symbulation_sgp -SEED {a} -START_MOI 0 -FILE_NAME _VT_NONE'
+    settings_filename = "Output_VT_NONE_SEED"+str(a)+".data"
 
     print(command_str)
     cmd(command_str+" > "+settings_filename)
+
+# Make sure all commands finish
 for i in open_cmds:
     i.wait()
