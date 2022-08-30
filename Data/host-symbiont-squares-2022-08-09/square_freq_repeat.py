@@ -7,7 +7,7 @@ import subprocess
 import sys
 import time
 
-verts = [0.0, 1.0]
+verts = [0.2, 0.8]
 NPROCS = 10
 open_cmds = []
 def cmd(command):
